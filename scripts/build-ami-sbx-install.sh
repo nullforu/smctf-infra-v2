@@ -11,7 +11,6 @@ SYSTEMD_DIR="/etc/systemd/system"
 
 COMPONENT="${1:-${SANDBOXD_COMPONENT:-}}"
 START_SERVICE="${START_SERVICE:-true}"
-ALLOW_MISSING_ENV="${ALLOW_MISSING_ENV:-false}"
 
 TMP_DIR=""
 
@@ -59,7 +58,6 @@ Environment variables:
   ARTICLES_ZIP_URL    Release zip URL.
   APP_ROOT            Install root directory. Default: /opt/sandboxd-o
   START_SERVICE       Start service immediately after install. Default: true
-  ALLOW_MISSING_ENV   Allow missing .env file. Default: false
 
 Examples:
   sudo bash prepare-sandboxd-o-ami.sh sbxlet
@@ -188,13 +186,9 @@ validate_extracted_files() {
         [[ -f "${src_dir}/install.sh" ]] || die "install.sh is required for sbxlet but was not found in ${src_dir}"
     fi
 
-    if [[ ! -f "${src_dir}/.env" ]]; then
-        if [[ "$ALLOW_MISSING_ENV" == "true" ]]; then
-            log "WARNING: .env not found in ${src_dir}, continuing because ALLOW_MISSING_ENV=true"
-        else
-            die ".env not found in ${src_dir}. Set ALLOW_MISSING_ENV=true to allow this."
-        fi
-    fi
+    [[ -f "${src_dir}/configs/sbxlet_config.json" ]] || die "configs/sbxlet_config.json not found in ${src_dir}"
+    [[ -f "${src_dir}/configs/sbxorch_config.json" ]] || die "configs/sbxorch_config.json not found in ${src_dir}"
+    [[ -f "${src_dir}/configs/sbxctl_config.json" ]] || die "configs/sbxctl_config.json not found in ${src_dir}"
 }
 
 stop_existing_services() {
@@ -240,10 +234,17 @@ install_articles() {
     if [[ -f "${APP_DIR}/install.sh" ]]; then
         chmod 0755 "${APP_DIR}/install.sh"
     fi
+}
 
-    if [[ -f "${APP_DIR}/.env" ]]; then
-        chmod 0600 "${APP_DIR}/.env"
-    fi
+install_default_configs() {
+    local config_root="/var/lib/sandboxd"
+
+    log "Installing default JSON configs into ${config_root}"
+
+    mkdir -p "${config_root}"
+    install -m 0644 "${APP_DIR}/configs/sbxlet_config.json" "${config_root}/sbxlet_config.json"
+    install -m 0644 "${APP_DIR}/configs/sbxorch_config.json" "${config_root}/sbxorch_config.json"
+    install -m 0644 "${APP_DIR}/configs/sbxctl_config.json" "${config_root}/sbxctl_config.json"
 }
 
 run_install_sh_if_needed() {
@@ -261,14 +262,6 @@ run_install_sh_if_needed() {
 write_systemd_service() {
     local service_path="${SYSTEMD_DIR}/${COMPONENT}.service"
     local binary_path="${APP_DIR}/${COMPONENT}"
-    local env_path="${APP_DIR}/.env"
-    local env_file_line=""
-
-    if [[ "$ALLOW_MISSING_ENV" == "true" ]]; then
-        env_file_line="EnvironmentFile=-${env_path}"
-    else
-        env_file_line="EnvironmentFile=${env_path}"
-    fi
 
     log "Writing systemd service: ${service_path}"
 
@@ -284,7 +277,6 @@ Type=simple
 User=root
 Group=root
 WorkingDirectory=${APP_DIR}
-${env_file_line}
 ExecStart=${binary_path}
 Restart=always
 RestartSec=3
@@ -311,24 +303,6 @@ verify_binary() {
     [[ -x "$binary_path" ]] || die "binary is not executable: ${binary_path}"
 
     log "Binary installed: ${binary_path}"
-}
-
-verify_env() {
-    local env_path="${APP_DIR}/.env"
-
-    if [[ -f "$env_path" ]]; then
-        log ".env installed: ${env_path}"
-
-        if grep -nEv '^[[:space:]]*($|#|[A-Za-z_][A-Za-z0-9_]*=)' "$env_path" >/tmp/sandboxd-o-env-invalid-lines 2>/dev/null; then
-            log "WARNING: .env has lines that may not be compatible with systemd EnvironmentFile:"
-            cat /tmp/sandboxd-o-env-invalid-lines >&2
-            log "WARNING: WorkingDirectory is still set, so ${COMPONENT} can still load .env itself if it supports dotenv loading."
-        fi
-
-        rm -f /tmp/sandboxd-o-env-invalid-lines
-    else
-        log "WARNING: .env is missing"
-    fi
 }
 
 start_and_verify_service() {
@@ -395,9 +369,9 @@ main() {
     validate_extracted_files "$src_dir"
     stop_existing_services
     install_articles "$src_dir"
+    install_default_configs
     run_install_sh_if_needed
     verify_binary
-    verify_env
     write_systemd_service
     start_and_verify_service
     print_summary
