@@ -1,6 +1,6 @@
 <mxfile host="Electron">
   <diagram name="페이지-1" id="0xCIYineUgVJ7Auf2_G3">
-    <mxGraphModel dx="972" dy="740" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="3300" pageHeight="4681" math="0" shadow="0">
+    <mxGraphModel dx="1169" dy="836" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="3300" pageHeight="4681" math="0" shadow="0">
       <root>
         <mxCell id="0" />
         <mxCell id="1" parent="0" />
@@ -223,6 +223,9 @@
         </mxCell>
         <mxCell id="dFDLIWHxTieYANeZmimu-5" parent="1" style="text;html=1;whiteSpace=wrap;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;rounded=0;fontSize=10;" value="(ASG : Optional)" vertex="1">
           <mxGeometry height="30" width="120" x="617.5" y="201" as="geometry" />
+        </mxCell>
+        <mxCell id="p5icJqS1yuqV0pEGQa0l-1" parent="1" style="sketch=0;points=[[0,0,0],[0.25,0,0],[0.5,0,0],[0.75,0,0],[1,0,0],[0,1,0],[0.25,1,0],[0.5,1,0],[0.75,1,0],[1,1,0],[0,0.25,0],[0,0.5,0],[0,0.75,0],[1,0.25,0],[1,0.5,0],[1,0.75,0]];outlineConnect=0;fontColor=#232F3E;fillColor=#ED7100;strokeColor=#ffffff;dashed=0;verticalLabelPosition=bottom;verticalAlign=top;align=center;html=1;fontSize=11;fontStyle=0;aspect=fixed;shape=mxgraph.aws4.resourceIcon;resIcon=mxgraph.aws4.ecs;labelBackgroundColor=default;" value="ECS Fargate&lt;div&gt;Invite Bot&lt;/div&gt;" vertex="1">
+          <mxGeometry height="30" width="30" x="560" y="380" as="geometry" />
         </mxCell>
       </root>
     </mxGraphModel>

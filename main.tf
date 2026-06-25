@@ -117,6 +117,13 @@ module "ecs" {
   backend_health_check_unhealthy_threshold = var.backend_health_check_unhealthy_threshold
   ecs_task_execution_role_arn              = module.policy.ecs_task_execution_role_arn
   ecs_task_role_arn                        = module.policy.ecs_task_role_arn
+
+  invite_bot_enabled            = var.invite_bot_enabled
+  invite_bot_image              = var.invite_bot_image
+  invite_bot_cpu                = var.invite_bot_cpu
+  invite_bot_memory             = var.invite_bot_memory
+  invite_bot_environment        = var.invite_bot_environment
+  invite_bot_log_retention_days = var.invite_bot_log_retention_days
 }
 
 module "sbxcluster" {

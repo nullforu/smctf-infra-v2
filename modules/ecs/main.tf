@@ -149,7 +149,7 @@ resource "aws_ecs_task_definition" "backend" {
         protocol      = "tcp"
       }]
       environment = [
-        for k, v in var.backend_environment : {
+        for k, v in local.backend_environment_effective : {
           name  = k
           value = v
         }
