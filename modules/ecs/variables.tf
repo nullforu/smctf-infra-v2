@@ -25,5 +25,30 @@ variable "backend_health_check_timeout_seconds" { type = number }
 variable "backend_health_check_healthy_threshold" { type = number }
 variable "backend_health_check_unhealthy_threshold" { type = number }
 
+variable "invite_bot_enabled" {
+  type    = bool
+  default = false
+}
+variable "invite_bot_image" {
+  type    = string
+  default = ""
+}
+variable "invite_bot_cpu" {
+  type    = number
+  default = 256
+}
+variable "invite_bot_memory" {
+  type    = number
+  default = 512
+}
+variable "invite_bot_environment" {
+  type    = map(string)
+  default = {}
+}
+variable "invite_bot_log_retention_days" {
+  type    = number
+  default = 14
+}
+
 variable "ecs_task_execution_role_arn" { type = string }
 variable "ecs_task_role_arn" { type = string }

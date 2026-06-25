@@ -31,6 +31,20 @@ backend_health_check_interval_seconds    = 20
 backend_health_check_timeout_seconds     = 5
 backend_health_check_healthy_threshold   = 2
 backend_health_check_unhealthy_threshold = 2
+
+# Invite bot (Discord). Deployed as a single ECS task (no sharding); see
+# modules/ecs/invite_bot.tf. When invite_bot_enabled = true, the backend's
+# DISCORD_BOT_BASE_URL is auto-set to the invite-bot Cloud Map DNS name.
+invite_bot_enabled = false
+invite_bot_image   = "123456789012.dkr.ecr.ap-northeast-2.amazonaws.com/invite-bot:latest"
+invite_bot_cpu     = 256
+invite_bot_memory  = 512
+invite_bot_environment = {
+  DISCORD_BOT_TOKEN        = ""
+  DISCORD_GUILD_ID         = ""
+  DISCORD_VERIFIED_ROLE_ID = ""
+  DISCORD_INTERNAL_SECRET  = "change-me"
+}
 backend_environment = {
   APP_ENV                   = "local"
   HTTP_ADDR                 = ":8080"
@@ -81,9 +95,24 @@ backend_environment = {
   VMS_MAX_SCOPE             = "team"
   VMS_MAX_PER               = "2"
   VMS_ORCHESTRATOR_BASE_URL = "http://10.10.0.1:8082"
+  VMS_ORCHESTRATOR_SECRET   = "change-me"
   VMS_ORCHESTRATOR_TIMEOUT  = "5s"
   VMS_CREATE_WINDOW         = "1m"
   VMS_CREATE_MAX            = "1"
+
+  DISCORD_ENABLED          = "false"
+  DISCORD_CLIENT_ID        = ""
+  DISCORD_CLIENT_SECRET    = "change-me"
+  DISCORD_REDIRECT_URI     = "https://api.example.com/api/discord/callback"
+  DISCORD_OAUTH_SCOPES     = "identify guilds.join"
+  DISCORD_STATE_TTL        = "5m"
+  DISCORD_OAUTH_TIMEOUT    = "10s"
+  DISCORD_SUCCESS_REDIRECT = "https://ctf.example.com/profile"
+  DISCORD_INVITE_URL       = ""
+  DISCORD_AUTO_JOIN        = "true"
+  DISCORD_BOT_BASE_URL     = "http://10.10.0.1:8083"
+  DISCORD_BOT_SECRET       = "change-me"
+  DISCORD_BOT_TIMEOUT      = "5s"
 }
 backend_log_retention_days = 14
 
