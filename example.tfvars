@@ -116,37 +116,6 @@ backend_environment = {
 }
 backend_log_retention_days = 14
 
-enable_sandboxd = true
-
-worker_node_count            = 2
-worker_node_instance_type    = "t3a.medium"
-worker_node_ami_id           = "ami-xxxxxxxxxxxxxxxxx"
-worker_node_key_name         = null
-worker_node_root_volume_size = 40
-
-control_plane_instance_type    = "t3a.medium"
-control_plane_ami_id           = "ami-yyyyyyyyyyyyyyyyy"
-control_plane_key_name         = null
-control_plane_root_volume_size = 40
-
-worker_public_port_range = {
-  from = 10000
-  to   = 32767
-}
-
-backend_to_control_plane_port = 8082
-control_plane_to_worker_port  = 8081
-
-worker_instance_profile_policy_arns = [
-  "arn:aws:iam::aws:policy/AmazonSSMManagedInstanceCore",
-  "arn:aws:iam::aws:policy/CloudWatchAgentServerPolicy"
-]
-
-control_plane_instance_profile_policy_arns = [
-  "arn:aws:iam::aws:policy/AmazonSSMManagedInstanceCore",
-  "arn:aws:iam::aws:policy/CloudWatchAgentServerPolicy"
-]
-
 enable_bastion           = true
 bastion_subnet_index     = 0
 bastion_ami_id           = null

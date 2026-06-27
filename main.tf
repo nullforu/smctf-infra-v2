@@ -76,13 +76,7 @@ module "policy" {
   name_prefix = local.name_prefix
   tags        = local.tags
 
-  s3_bucket_arn        = module.storage.s3_bucket_arn
-  backend_image        = var.backend_image
-  ecr_repository_names = var.ecr_repository_names
-
-  enable_sandboxd                            = var.enable_sandboxd
-  worker_instance_profile_policy_arns        = var.worker_instance_profile_policy_arns
-  control_plane_instance_profile_policy_arns = var.control_plane_instance_profile_policy_arns
+  s3_bucket_arn = module.storage.s3_bucket_arn
 
   enable_bastion                       = var.enable_bastion
   bastion_instance_profile_policy_arns = var.bastion_instance_profile_policy_arns
@@ -124,40 +118,6 @@ module "ecs" {
   invite_bot_memory             = var.invite_bot_memory
   invite_bot_environment        = var.invite_bot_environment
   invite_bot_log_retention_days = var.invite_bot_log_retention_days
-}
-
-module "sbxcluster" {
-  source = "./modules/sbxcluster"
-
-  name_prefix = local.name_prefix
-  tags        = local.tags
-
-  vpc_id             = module.network.vpc_id
-  public_subnet_ids  = module.network.public_subnet_ids
-  private_subnet_ids = module.network.private_subnet_ids
-
-  enable_sandboxd = var.enable_sandboxd
-
-  worker_node_count            = var.worker_node_count
-  worker_node_instance_type    = var.worker_node_instance_type
-  worker_node_ami_id           = var.worker_node_ami_id
-  worker_node_key_name         = var.worker_node_key_name
-  worker_node_root_volume_size = var.worker_node_root_volume_size
-
-  control_plane_instance_type    = var.control_plane_instance_type
-  control_plane_ami_id           = var.control_plane_ami_id
-  control_plane_key_name         = var.control_plane_key_name
-  control_plane_root_volume_size = var.control_plane_root_volume_size
-
-  worker_public_port_range      = var.worker_public_port_range
-  backend_to_control_plane_port = var.backend_to_control_plane_port
-  control_plane_to_worker_port  = var.control_plane_to_worker_port
-
-  backend_security_group_id = module.ecs.backend_service_sg_id
-  bastion_security_group_id = module.bastion.security_group_id
-
-  worker_instance_profile_name        = module.policy.worker_instance_profile_name
-  control_plane_instance_profile_name = module.policy.control_plane_instance_profile_name
 }
 
 module "bastion" {
