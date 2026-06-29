@@ -14,10 +14,6 @@ variable "protected_subnet_ids" {
   type = list(string)
 }
 
-variable "backend_service_sg_id" {
-  type = string
-}
-
 variable "rds_instance_class" {
   type = string
 }

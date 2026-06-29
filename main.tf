@@ -18,10 +18,10 @@ terraform {
   }
 
   backend "s3" {
-    bucket         = "terraform-be6f"
+    bucket         = "terraform-3c70"
     key            = "smctf/terraform.tfstate"
     region         = "ap-northeast-2"
-    dynamodb_table = "terraform-be6f"
+    dynamodb_table = "terraform-3c70"
     encrypt        = true
   }
 }
@@ -37,6 +37,17 @@ locals {
     },
     var.common_tags
   )
+
+  # DB/Redis connection values are derived from the provisioned resources so they
+  # are defined once (rds_* vars) instead of being duplicated in backend_environment.
+  backend_managed_environment = {
+    DB_HOST     = module.db.rds_endpoint
+    DB_PORT     = "5432"
+    DB_NAME     = var.rds_db_name
+    DB_USER     = var.rds_master_username
+    DB_PASSWORD = var.rds_master_password
+    REDIS_ADDR  = "${module.db.redis_primary_endpoint}:6379"
+  }
 }
 
 module "network" {
@@ -103,7 +114,7 @@ module "ecs" {
 
   backend_autoscaling_enabled              = var.backend_autoscaling_enabled
   backend_autoscaling_cpu_target           = var.backend_autoscaling_cpu_target
-  backend_environment                      = var.backend_environment
+  backend_environment                      = merge(var.backend_environment, local.backend_managed_environment)
   backend_log_retention_days               = var.backend_log_retention_days
   backend_health_check_interval_seconds    = var.backend_health_check_interval_seconds
   backend_health_check_timeout_seconds     = var.backend_health_check_timeout_seconds
@@ -146,9 +157,8 @@ module "db" {
   name_prefix = local.name_prefix
   tags        = local.tags
 
-  vpc_id                = module.network.vpc_id
-  protected_subnet_ids  = module.network.protected_subnet_ids
-  backend_service_sg_id = module.ecs.backend_service_sg_id
+  vpc_id               = module.network.vpc_id
+  protected_subnet_ids = module.network.protected_subnet_ids
 
   rds_instance_class        = var.rds_instance_class
   rds_allocated_storage_gb  = var.rds_allocated_storage_gb
@@ -164,4 +174,24 @@ module "db" {
   redis_engine_version  = var.redis_engine_version
   redis_multi_az        = var.redis_multi_az
   redis_num_cache_nodes = var.redis_num_cache_nodes
+}
+
+resource "aws_security_group_rule" "backend_to_rds" {
+  type                     = "ingress"
+  from_port                = 5432
+  to_port                  = 5432
+  protocol                 = "tcp"
+  security_group_id        = module.db.rds_sg_id
+  source_security_group_id = module.ecs.backend_service_sg_id
+  description              = "Backend ECS service to RDS"
+}
+
+resource "aws_security_group_rule" "backend_to_redis" {
+  type                     = "ingress"
+  from_port                = 6379
+  to_port                  = 6379
+  protocol                 = "tcp"
+  security_group_id        = module.db.redis_sg_id
+  source_security_group_id = module.ecs.backend_service_sg_id
+  description              = "Backend ECS service to ElastiCache Redis"
 }
