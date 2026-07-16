@@ -1,5 +1,6 @@
 provider "aws" {
-  region = var.region
+  region  = var.region
+  profile = var.aws_profile
 }
 
 terraform {
@@ -112,16 +113,18 @@ module "ecs" {
   backend_min_count     = var.backend_min_count
   backend_max_count     = var.backend_max_count
 
-  backend_autoscaling_enabled              = var.backend_autoscaling_enabled
-  backend_autoscaling_cpu_target           = var.backend_autoscaling_cpu_target
-  backend_environment                      = merge(var.backend_environment, local.backend_managed_environment)
-  backend_log_retention_days               = var.backend_log_retention_days
-  backend_health_check_interval_seconds    = var.backend_health_check_interval_seconds
-  backend_health_check_timeout_seconds     = var.backend_health_check_timeout_seconds
-  backend_health_check_healthy_threshold   = var.backend_health_check_healthy_threshold
-  backend_health_check_unhealthy_threshold = var.backend_health_check_unhealthy_threshold
-  ecs_task_execution_role_arn              = module.policy.ecs_task_execution_role_arn
-  ecs_task_role_arn                        = module.policy.ecs_task_role_arn
+  backend_autoscaling_enabled                    = var.backend_autoscaling_enabled
+  backend_autoscaling_cpu_target                 = var.backend_autoscaling_cpu_target
+  backend_autoscaling_scale_in_cooldown_seconds  = var.backend_autoscaling_scale_in_cooldown_seconds
+  backend_autoscaling_scale_out_cooldown_seconds = var.backend_autoscaling_scale_out_cooldown_seconds
+  backend_environment                            = merge(var.backend_environment, local.backend_managed_environment)
+  backend_log_retention_days                     = var.backend_log_retention_days
+  backend_health_check_interval_seconds          = var.backend_health_check_interval_seconds
+  backend_health_check_timeout_seconds           = var.backend_health_check_timeout_seconds
+  backend_health_check_healthy_threshold         = var.backend_health_check_healthy_threshold
+  backend_health_check_unhealthy_threshold       = var.backend_health_check_unhealthy_threshold
+  ecs_task_execution_role_arn                    = module.policy.ecs_task_execution_role_arn
+  ecs_task_role_arn                              = module.policy.ecs_task_role_arn
 
   invite_bot_enabled            = var.invite_bot_enabled
   invite_bot_image              = var.invite_bot_image

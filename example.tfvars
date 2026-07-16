@@ -39,11 +39,12 @@ invite_bot_enabled = false
 invite_bot_image   = "123456789012.dkr.ecr.ap-northeast-2.amazonaws.com/invite-bot:latest"
 invite_bot_cpu     = 256
 invite_bot_memory  = 512
+# The verified role and solve-announcement channel are configured per Division
+# in the backend (Admin > Divisions), not here.
 invite_bot_environment = {
-  DISCORD_BOT_TOKEN        = ""
-  DISCORD_GUILD_ID         = ""
-  DISCORD_VERIFIED_ROLE_ID = ""
-  DISCORD_INTERNAL_SECRET  = "change-me"
+  DISCORD_BOT_TOKEN       = ""
+  DISCORD_GUILD_ID        = ""
+  DISCORD_INTERNAL_SECRET = "change-me"
 }
 backend_environment = {
   APP_ENV          = "local"

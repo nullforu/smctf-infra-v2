@@ -214,7 +214,9 @@ resource "aws_appautoscaling_policy" "backend_cpu" {
       predefined_metric_type = "ECSServiceAverageCPUUtilization"
     }
 
-    target_value = var.backend_autoscaling_cpu_target
+    target_value       = var.backend_autoscaling_cpu_target
+    scale_in_cooldown  = var.backend_autoscaling_scale_in_cooldown_seconds
+    scale_out_cooldown = var.backend_autoscaling_scale_out_cooldown_seconds
   }
 }
 

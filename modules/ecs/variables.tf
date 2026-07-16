@@ -15,6 +15,8 @@ variable "backend_min_count" { type = number }
 variable "backend_max_count" { type = number }
 variable "backend_autoscaling_enabled" { type = bool }
 variable "backend_autoscaling_cpu_target" { type = number }
+variable "backend_autoscaling_scale_in_cooldown_seconds" { type = number }
+variable "backend_autoscaling_scale_out_cooldown_seconds" { type = number }
 variable "backend_environment" {
   type    = map(string)
   default = {}

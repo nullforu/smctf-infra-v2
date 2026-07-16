@@ -16,6 +16,12 @@ variable "region" {
   default     = "ap-northeast-2"
 }
 
+variable "aws_profile" {
+  type        = string
+  description = "AWS CLI profile to use."
+  default     = "default"
+}
+
 variable "azs" {
   type        = list(string)
   description = "AZs to use (must be 2 for this design)."
@@ -131,6 +137,18 @@ variable "backend_autoscaling_cpu_target" {
   type        = number
   description = "Target CPU utilization percentage for backend autoscaling."
   default     = 70
+}
+
+variable "backend_autoscaling_scale_in_cooldown_seconds" {
+  type        = number
+  description = "Cooldown in seconds before scaling in backend ECS tasks."
+  default     = 180
+}
+
+variable "backend_autoscaling_scale_out_cooldown_seconds" {
+  type        = number
+  description = "Cooldown in seconds before scaling out backend ECS tasks."
+  default     = 60
 }
 
 variable "backend_environment" {
