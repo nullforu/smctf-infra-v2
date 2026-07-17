@@ -22,6 +22,11 @@ variable "rds_allocated_storage_gb" {
   type = number
 }
 
+variable "rds_restore_snapshot_identifier" {
+  type    = string
+  default = null
+}
+
 variable "rds_multi_az" {
   type = bool
 }

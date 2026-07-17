@@ -124,15 +124,16 @@ bastion_instance_profile_policy_arns = [
   "arn:aws:iam::aws:policy/CloudWatchAgentServerPolicy"
 ]
 
-rds_instance_class        = "db.t3.micro"
-rds_allocated_storage_gb  = 20
-rds_multi_az              = false
-rds_engine_version        = null
-rds_db_name               = "smctf"
-rds_master_username       = "smctf_admin"
-rds_master_password       = "REPLACE_ME"
-rds_backup_retention_days = 7
-rds_deletion_protection   = true
+rds_instance_class              = "db.t3.micro"
+rds_allocated_storage_gb        = 20
+rds_restore_snapshot_identifier = null
+rds_multi_az                    = false
+rds_engine_version              = null
+rds_db_name                     = "smctf"
+rds_master_username             = "smctf_admin"
+rds_master_password             = "REPLACE_ME"
+rds_backup_retention_days       = 7
+rds_deletion_protection         = true
 
 redis_node_type       = "cache.t3.micro"
 redis_engine_version  = null
