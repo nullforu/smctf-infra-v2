@@ -1,3 +1,7 @@
+locals {
+  rds_restore_from_snapshot = var.rds_restore_snapshot_identifier != null && trimspace(var.rds_restore_snapshot_identifier) != ""
+}
+
 resource "aws_security_group" "rds" {
   name        = "${var.name_prefix}-rds"
   description = "RDS security group"
@@ -46,13 +50,13 @@ resource "aws_db_subnet_group" "main" {
 resource "aws_db_instance" "main" {
   identifier                = "${var.name_prefix}-postgres"
   engine                    = "postgres"
-  engine_version            = var.rds_engine_version
+  engine_version            = local.rds_restore_from_snapshot ? null : var.rds_engine_version
   instance_class            = var.rds_instance_class
-  allocated_storage         = var.rds_allocated_storage_gb
+  allocated_storage         = local.rds_restore_from_snapshot ? null : var.rds_allocated_storage_gb
   storage_encrypted         = true
-  db_name                   = var.rds_db_name
-  username                  = var.rds_master_username
-  password                  = var.rds_master_password
+  db_name                   = local.rds_restore_from_snapshot ? null : var.rds_db_name
+  username                  = local.rds_restore_from_snapshot ? null : var.rds_master_username
+  password                  = local.rds_restore_from_snapshot ? null : var.rds_master_password
   multi_az                  = var.rds_multi_az
   db_subnet_group_name      = aws_db_subnet_group.main.name
   vpc_security_group_ids    = [aws_security_group.rds.id]
@@ -61,6 +65,7 @@ resource "aws_db_instance" "main" {
   deletion_protection       = var.rds_deletion_protection
   skip_final_snapshot       = false
   final_snapshot_identifier = "${var.name_prefix}-postgres-final-${formatdate("YYYYMMDDhhmm", time_static.rds_snapshot.rfc3339)}"
+  snapshot_identifier       = local.rds_restore_from_snapshot ? var.rds_restore_snapshot_identifier : null
 
   tags = var.tags
 }

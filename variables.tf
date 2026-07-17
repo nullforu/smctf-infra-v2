@@ -274,6 +274,12 @@ variable "rds_allocated_storage_gb" {
   default     = 20
 }
 
+variable "rds_restore_snapshot_identifier" {
+  type        = string
+  description = "Optional DB snapshot identifier to restore from. Null creates a fresh RDS instance."
+  default     = null
+}
+
 variable "rds_multi_az" {
   type        = bool
   description = "Enable RDS Multi-AZ."

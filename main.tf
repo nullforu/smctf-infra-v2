@@ -163,15 +163,16 @@ module "db" {
   vpc_id               = module.network.vpc_id
   protected_subnet_ids = module.network.protected_subnet_ids
 
-  rds_instance_class        = var.rds_instance_class
-  rds_allocated_storage_gb  = var.rds_allocated_storage_gb
-  rds_multi_az              = var.rds_multi_az
-  rds_engine_version        = var.rds_engine_version
-  rds_db_name               = var.rds_db_name
-  rds_master_username       = var.rds_master_username
-  rds_master_password       = var.rds_master_password
-  rds_backup_retention_days = var.rds_backup_retention_days
-  rds_deletion_protection   = var.rds_deletion_protection
+  rds_instance_class              = var.rds_instance_class
+  rds_allocated_storage_gb        = var.rds_allocated_storage_gb
+  rds_restore_snapshot_identifier = var.rds_restore_snapshot_identifier
+  rds_multi_az                    = var.rds_multi_az
+  rds_engine_version              = var.rds_engine_version
+  rds_db_name                     = var.rds_db_name
+  rds_master_username             = var.rds_master_username
+  rds_master_password             = var.rds_master_password
+  rds_backup_retention_days       = var.rds_backup_retention_days
+  rds_deletion_protection         = var.rds_deletion_protection
 
   redis_node_type       = var.redis_node_type
   redis_engine_version  = var.redis_engine_version
